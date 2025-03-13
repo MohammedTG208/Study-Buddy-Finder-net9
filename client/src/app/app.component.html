@@ -1,0 +1,6 @@
+<h1>hello mr: {{title}}</h1><!-- this is call interpolation {{property}}-->
+
+<ul>
+  <li *ngFor="let user of users">
+    {{user.id}}-{{user.firstName}}-{{user.lastName}}-{{user.email}}-<img src="{{user.profilePictureUrl}}" alt="avatar">
+  </li>
