@@ -1,22 +1,32 @@
 using API.Data;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
-[ApiController]
-[Route("api/[controller]")]//will display like localhost:5001/api/users
-public class UsersControllers(DataContext context):ControllerBase
+
+public class UsersController(DataContext context):BaseApiController
 {
 
     [HttpGet]
-    public ActionResult<IEnumerable<User>> GetUsers(){
-        var users=context.Users.ToList;
+    public async Task<ActionResult<IEnumerable<User>>> GetUsers(){
+        var users=await context.Users.ToListAsync();
+        if(users==null || users.Count==0){
+            return NotFound("No users found");
+        }
         return Ok(users);
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<IEnumerable<User>> GetUser(int id){
-        var user = context.Users.Find(id);
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<User>>> GetUser(int id){
+        var user =await context.Users.FindAsync(id);
+
+        // Check if the user is null and return a 404 Not Found response if it is.
+        if(user==null){
+            return NotFound("User not found");
+        }
         return Ok(user);
     }
 }

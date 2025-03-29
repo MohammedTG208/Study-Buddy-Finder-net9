@@ -1,15 +1,13 @@
-using API.Data;
-using Microsoft.EntityFrameworkCore;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//It like inject all services I have in the application from MyAppServicesExtensions.cs and AuthServiceExtensions.cs
 // Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddCors();
+builder.Services.AddMyAppServices(builder.Configuration);
+builder.Services.AddAuthServiceExtensions(builder.Configuration);
 
-builder.Services.AddDbContext<DataContext>(opt=>{
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")); 
-});
+
 
 var app = builder.Build();
 
@@ -20,6 +18,10 @@ app.UseCors(
     .AllowAnyMethod()
     .WithOrigins("http://localhost:4200","https://localhost:4200")
 );
+
+// the order of middleware is important here Authentication must be before Authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

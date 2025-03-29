@@ -10,11 +10,15 @@ public class User
 
     public required String Email { get; set; }
 
-    public required string Password { get; set; }
+    public required byte[] PasswordHash { get; set; }
+
+    public required byte[] PasswordSalt { get; set; }
 
     public String? ProfilePictureUrl { get; set; }=null;
 
     public DateTime CreatedAt { get; set; }=DateTime.Now;
 
     public DateTime? UpdateAt { get; set; }=null;
+
+    public string Role { get; set; }="student"; // Default role for the user
 }
